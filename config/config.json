@@ -1,0 +1,12 @@
+{
+  "facebook": {
+    "baseUrl":"https://graph.facebook.com/v21.0",
+    "accessToken": "<access_token>",
+    "maxPagesForGroups": 1,
+    "maxPagesForPosts": 1,
+    "maxPagesForComments": 1,
+    "db": {
+      "url": "postgres://postgres:postgres@localhost:5432/core"
+    }
+  }
+}
