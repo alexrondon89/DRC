@@ -14,29 +14,33 @@ func main() {
 	dbCli := internal.NewDbClient(srvConfig)
 	option := os.Getenv("TYPE")
 	switch option {
-	case "full_information":
-		log.Println("full_information not implemented yet")
+	case "groups_posts_comments":
+		err := dbCli.GetGroupsPostsAndComments()
+		if err != nil {
+			log.Fatalf("groups_posts_comments command execution failed, [error] %v", err)
+		}
+		log.Println("groups_posts_comments command executed successfully...")
 
-	case "groups_information":
+	case "groups":
 		err := dbCli.GetGroups()
 		if err != nil {
-			log.Fatalf("groups_information execution failed, [error] %v", err)
+			log.Fatalf("groups command execution failed, [error] %v", err)
 		}
-		log.Println("groups_information executed successfully...")
+		log.Println("groups command executed successfully...")
 
-	case "posts_information":
+	case "posts":
 		err := dbCli.GetPosts()
 		if err != nil {
-			log.Fatalf("posts_information execution failed, [error] %v", err)
+			log.Fatalf("posts command execution failed, [error] %v", err)
 		}
-		log.Println("posts_information executed successfully...")
+		log.Println("posts command executed successfully...")
 
-	case "comments_information":
+	case "comments":
 		err := dbCli.GetComments()
 		if err != nil {
-			log.Fatalf("comments_information execution failed, [error] %v", err)
+			log.Fatalf("comments command execution failed, [error] %v", err)
 		}
-		log.Println("comments_information executed successfully...")
+		log.Println("comments command executed successfully...")
 
 	default:
 		log.Fatalf("%s is not a valid option", option)
