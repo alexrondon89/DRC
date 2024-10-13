@@ -3,12 +3,13 @@ package facebook
 import (
 	"context"
 	"fmt"
-	"github.com/alexrondon89/DRC/config"
-	"github.com/alexrondon89/DRC/internal/bll/dal/facebook/models"
-	"github.com/alexrondon89/DRC/pkg"
-	"github.com/jackc/pgx/v4"
 	"log"
 	"net/http"
+
+	"github.com/alexrondon89/DRC/information-collector-service/config"
+	"github.com/alexrondon89/DRC/information-collector-service/internal/bll/dal/facebook/models"
+	"github.com/alexrondon89/DRC/information-collector-service/pkg"
+	"github.com/jackc/pgx/v4"
 )
 
 type FacebookCollector struct {
@@ -18,7 +19,7 @@ type FacebookCollector struct {
 }
 
 func NewFacebookCollector(http *http.Client, config config.Facebook) FacebookCollector {
-	fmt.Println("creating facebook collector client")
+	log.Println("creating facebook collector client")
 	conn, err := pgx.Connect(context.Background(), config.Db.Url)
 	if err != nil {
 		log.Fatalf("unable to connect to database: %v", err)
@@ -32,7 +33,7 @@ func NewFacebookCollector(http *http.Client, config config.Facebook) FacebookCol
 
 func (faceColl FacebookCollector) GetUserInfo() (models.User, error) {
 	url := fmt.Sprintf("%s/me?access_token=%s", faceColl.config.BaseUrl, faceColl.config.AccessToken)
-	fmt.Println("requesting user info with url ", url)
+	log.Println("requesting user info with url ", url)
 	var userInfo models.User
 	err := pkg.ExecHttp(faceColl.http, nil, "GET", url, &userInfo)
 	if err != nil {
@@ -45,7 +46,7 @@ func (faceColl FacebookCollector) GetUserGroups(userId string, url string) (mode
 	if url == "" {
 		url = fmt.Sprintf("%s/%s/groups?access_token=%s", faceColl.config.BaseUrl, userId, faceColl.config.AccessToken)
 	}
-	fmt.Println("requesting user groups with url ", url)
+	log.Println("requesting user groups with url ", url)
 	var groupsInfo models.Groups
 	err := pkg.ExecHttp(faceColl.http, nil, "GET", url, &groupsInfo)
 	if err != nil {
@@ -58,7 +59,7 @@ func (faceColl FacebookCollector) GetGroupPosts(groupId string, url string) (mod
 	if url == "" {
 		url = fmt.Sprintf("%s/%s/feed/?access_token=%s", faceColl.config.BaseUrl, groupId, faceColl.config.AccessToken)
 	}
-	fmt.Println("requesting group's posts with url ", url)
+	log.Println("requesting group's posts with url ", url)
 	var postsInfo models.Posts
 	err := pkg.ExecHttp(faceColl.http, nil, "GET", url, &postsInfo)
 	if err != nil {
@@ -71,7 +72,7 @@ func (faceColl FacebookCollector) GetPostComments(postId string, url string) (mo
 	if url == "" {
 		url = fmt.Sprintf("%s/%s/comments?access_token=%s", faceColl.config.BaseUrl, postId, faceColl.config.AccessToken)
 	}
-	fmt.Println("requesting post's comments with url ", url)
+	log.Println("requesting post's comments with url ", url)
 	var commentsInfo models.Comments
 	err := pkg.ExecHttp(faceColl.http, nil, "GET", url, &commentsInfo)
 	if err != nil {
@@ -83,7 +84,8 @@ func (faceColl FacebookCollector) GetPostComments(postId string, url string) (mo
 func (faceColl FacebookCollector) SaveUserGroups(groups []models.Group) error {
 	tx, err := faceColl.dbCli.Begin(context.Background())
 	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %v", err)
+		log.Printf("failed to begin transaction: %v", err)
+		return err
 	}
 
 	defer tx.Rollback(context.Background())
@@ -111,13 +113,15 @@ func (faceColl FacebookCollector) SaveUserGroups(groups []models.Group) error {
 			group.UpdatedTime,
 		)
 		if err != nil {
-			return fmt.Errorf("failed to execute insert: %v", err)
+			log.Printf("failed to execute insert: %v", err)
+			return err
 		}
 	}
 
 	err = tx.Commit(context.Background())
 	if err != nil {
-		return fmt.Errorf("failed to commit transaction: %v", err)
+		log.Printf("failed to commit transaction: %v", err)
+		return err
 	}
 
 	return nil
@@ -126,7 +130,8 @@ func (faceColl FacebookCollector) SaveUserGroups(groups []models.Group) error {
 func (faceColl FacebookCollector) SaveGroupPosts(posts []models.Post, groupId string) error {
 	tx, err := faceColl.dbCli.Begin(context.Background())
 	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %v", err)
+		log.Printf("failed to begin transaction: %v", err)
+		return err
 	}
 
 	defer tx.Rollback(context.Background())
@@ -154,13 +159,15 @@ func (faceColl FacebookCollector) SaveGroupPosts(posts []models.Post, groupId st
 			post.CreatedAt,
 		)
 		if err != nil {
-			return fmt.Errorf("failed to execute insert: %v", err)
+			log.Printf("failed to execute insert: %v", err)
+			return err
 		}
 	}
 
 	err = tx.Commit(context.Background())
 	if err != nil {
-		return fmt.Errorf("failed to commit transaction: %v", err)
+		log.Printf("failed to commit transaction: %v", err)
+		return err
 	}
 
 	return nil
@@ -169,7 +176,8 @@ func (faceColl FacebookCollector) SaveGroupPosts(posts []models.Post, groupId st
 func (faceColl FacebookCollector) SavePostComments(comments []models.Comment, postId string) error {
 	tx, err := faceColl.dbCli.Begin(context.Background())
 	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %v", err)
+		log.Printf("failed to begin transaction: %v", err)
+		return err
 	}
 
 	defer tx.Rollback(context.Background())
@@ -197,13 +205,15 @@ func (faceColl FacebookCollector) SavePostComments(comments []models.Comment, po
 			comment.CreatedAt,
 		)
 		if err != nil {
-			return fmt.Errorf("failed to execute insert: %v", err)
+			log.Printf("failed to execute insert: %v", err)
+			return err
 		}
 	}
 
 	err = tx.Commit(context.Background())
 	if err != nil {
-		return fmt.Errorf("failed to commit transaction: %v", err)
+		log.Printf("failed to commit transaction: %v", err)
+		return err
 	}
 
 	return nil

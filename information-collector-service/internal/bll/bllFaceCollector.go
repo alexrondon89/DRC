@@ -1,9 +1,10 @@
 package bll
 
 import (
-	"fmt"
-	"github.com/alexrondon89/DRC/config"
-	"github.com/alexrondon89/DRC/internal/bll/dal/facebook/models"
+	"log"
+
+	"github.com/alexrondon89/DRC/information-collector-service/config"
+	"github.com/alexrondon89/DRC/information-collector-service/internal/bll/dal/facebook/models"
 )
 
 type FacebookInterface interface {
@@ -41,13 +42,13 @@ func NewProcessor(facebook FacebookInterface, config config.Facebook) *Processor
 }
 
 func (pro *Processor) GetFacebookInformation() error {
-	fmt.Println("getting facebook information...")
+	log.Println("getting facebook information...")
 	respUserInfo, err := pro.Facebook.GetUserInfo()
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("user root: ", respUserInfo)
+	log.Println("user root: ", respUserInfo)
 	err = pro.getFacebookGroupsInformation(respUserInfo.ID, models.Paging{})
 	if err != nil {
 		return err
@@ -57,7 +58,7 @@ func (pro *Processor) GetFacebookInformation() error {
 
 func (pro *Processor) getFacebookGroupsInformation(userId string, paging models.Paging) error {
 	if pro.counter.groupPagesCount <= pro.Config.MaxPagesForGroups {
-		fmt.Println("group information, page ", pro.counter.groupPagesCount)
+		log.Println("group information, page ", pro.counter.groupPagesCount)
 		pro.counter.groupPagesCount += 1
 
 		respUserGroups, err := pro.Facebook.GetUserGroups(userId, paging.Next)
@@ -91,7 +92,7 @@ func (pro *Processor) getFacebookGroupsInformation(userId string, paging models.
 
 func (pro *Processor) getFacebookPostsInformation(groupId string, paging models.Paging) error {
 	if pro.counter.postPagesCount <= pro.Config.MaxPagesForPosts {
-		fmt.Println("post information, page ", pro.counter.postPagesCount)
+		log.Println("post information, page ", pro.counter.postPagesCount)
 		pro.counter.postPagesCount += 1
 
 		respGroupPosts, err := pro.Facebook.GetGroupPosts(groupId, paging.Next)
@@ -126,7 +127,7 @@ func (pro *Processor) getFacebookPostsInformation(groupId string, paging models.
 
 func (pro *Processor) getFacebookCommentsInformation(postId string, paging models.Paging) error {
 	if pro.counter.commentPagesCount <= pro.Config.MaxPagesForComments {
-		fmt.Println("comment information, page ", pro.counter.commentPagesCount)
+		log.Println("comment information, page ", pro.counter.commentPagesCount)
 		pro.counter.commentPagesCount += 1
 
 		respPostComments, err := pro.Facebook.GetPostComments(postId, paging.Next)

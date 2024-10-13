@@ -4,13 +4,13 @@ import (
 	"context"
 	"crypto/rand"
 	"fmt"
+	"github.com/jackc/pgx/v4"
 	"log"
 	"math/big"
 	"net/http"
 
-	"github.com/alexrondon89/DRC/config"
-	"github.com/alexrondon89/DRC/internal/bll/dal/facebook/models"
-	"github.com/jackc/pgx/v4"
+	"github.com/alexrondon89/DRC/information-collector-service/config"
+	"github.com/alexrondon89/DRC/information-collector-service/internal/bll/dal/facebook/models"
 )
 
 type MockFacebookCollector struct {
@@ -134,7 +134,8 @@ func (mockColl MockFacebookCollector) GetPostComments(postId string, url string)
 func (mockColl MockFacebookCollector) SaveUserGroups(groups []models.Group) error {
 	tx, err := mockColl.dbCli.Begin(context.Background())
 	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %v", err)
+		log.Printf("failed to begin transaction: %v", err)
+		return err
 	}
 
 	defer tx.Rollback(context.Background())
@@ -162,13 +163,15 @@ func (mockColl MockFacebookCollector) SaveUserGroups(groups []models.Group) erro
 			group.UpdatedTime,
 		)
 		if err != nil {
-			return fmt.Errorf("failed to execute insert: %v", err)
+			log.Printf("failed to execute insert: %v", err)
+			return err
 		}
 	}
 
 	err = tx.Commit(context.Background())
 	if err != nil {
-		return fmt.Errorf("failed to commit transaction: %v", err)
+		log.Printf("failed to commit transaction: %v", err)
+		return err
 	}
 
 	return nil
@@ -177,7 +180,8 @@ func (mockColl MockFacebookCollector) SaveUserGroups(groups []models.Group) erro
 func (mockColl MockFacebookCollector) SaveGroupPosts(posts []models.Post, groupId string) error {
 	tx, err := mockColl.dbCli.Begin(context.Background())
 	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %v", err)
+		log.Printf("failed to begin transaction: %v", err)
+		return err
 	}
 
 	defer tx.Rollback(context.Background())
@@ -205,13 +209,15 @@ func (mockColl MockFacebookCollector) SaveGroupPosts(posts []models.Post, groupI
 			post.CreatedAt,
 		)
 		if err != nil {
-			return fmt.Errorf("failed to execute insert: %v", err)
+			log.Printf("failed to execute insert: %v", err)
+			return err
 		}
 	}
 
 	err = tx.Commit(context.Background())
 	if err != nil {
-		return fmt.Errorf("failed to commit transaction: %v", err)
+		log.Printf("failed to commit transaction: %v", err)
+		return err
 	}
 
 	return nil
@@ -220,7 +226,8 @@ func (mockColl MockFacebookCollector) SaveGroupPosts(posts []models.Post, groupI
 func (mockColl MockFacebookCollector) SavePostComments(comments []models.Comment, postId string) error {
 	tx, err := mockColl.dbCli.Begin(context.Background())
 	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %v", err)
+		log.Printf("failed to begin transaction: %v", err)
+		return err
 	}
 
 	defer tx.Rollback(context.Background())
@@ -248,13 +255,15 @@ func (mockColl MockFacebookCollector) SavePostComments(comments []models.Comment
 			comment.CreatedAt,
 		)
 		if err != nil {
-			return fmt.Errorf("failed to execute insert: %v", err)
+			log.Printf("failed to execute insert: %v", err)
+			return err
 		}
 	}
 
 	err = tx.Commit(context.Background())
 	if err != nil {
-		return fmt.Errorf("failed to commit transaction: %v", err)
+		log.Printf("failed to commit transaction: %v", err)
+		return err
 	}
 
 	return nil

@@ -2,10 +2,11 @@ package config
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"log"
 	"os"
 	"os/exec"
+
+	"github.com/spf13/viper"
 )
 
 type Config struct {
@@ -42,12 +43,12 @@ func GetServiceConfig() Config {
 	if err := viper.Unmarshal(&config); err != nil {
 		log.Fatalf("error unmarshalling service configuration: %v", err)
 	}
-	fmt.Println("loading configuration...")
+	log.Println("loading configuration...")
 	return config
 }
 
 func ExecDbMigrator() {
-	fmt.Println("execunting flyway scripts...")
+	log.Println("executing flyway scripts...")
 	workDir, err := os.Getwd()
 	if err != nil {
 		log.Fatalf("error getting working directory: %v", err)
@@ -57,5 +58,5 @@ func ExecDbMigrator() {
 	if err != nil {
 		log.Fatalf("error migrating database: %s ,%v", output, err)
 	}
-	fmt.Println(string(output))
+	log.Println(string(output))
 }

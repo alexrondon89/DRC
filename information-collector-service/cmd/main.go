@@ -1,15 +1,16 @@
 package main
 
 import (
-	"fmt"
-	"github.com/alexrondon89/DRC/config"
-	"github.com/alexrondon89/DRC/internal/bll"
-	"github.com/alexrondon89/DRC/internal/bll/dal/facebook"
+	"log"
 	"net/http"
+
+	"github.com/alexrondon89/DRC/information-collector-service/config"
+	"github.com/alexrondon89/DRC/information-collector-service/internal/bll"
+	"github.com/alexrondon89/DRC/information-collector-service/internal/bll/dal/facebook"
 )
 
 func main() {
-	fmt.Println("starting DRC service to collect data...")
+	log.Println("starting information-collector-service...")
 	srvConfig := config.GetServiceConfig()
 	config.ExecDbMigrator()
 	httpCli := &http.Client{}
@@ -18,8 +19,8 @@ func main() {
 	faceBll := bll.NewProcessor(faceCollector, srvConfig.Facebook)
 	err := faceBll.GetFacebookInformation()
 	if err != nil {
-		fmt.Println("service DRC failed. [error] ", err)
+		log.Println("service information-collector-service failed. [error] ", err)
 	}
 	faceCollector.Close()
-	fmt.Println("service DRC finished successfully...")
+	log.Println("service information-collector-service finished successfully...")
 }
