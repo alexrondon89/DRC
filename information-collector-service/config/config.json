@@ -6,7 +6,7 @@
     "maxPagesForPosts": 1,
     "maxPagesForComments": 1,
     "db": {
-      "url": "postgres://postgres:postgres@postgres_1:5432/core"
+      "url": "postgres://postgres:postgres@postgres:5432/core"
     }
   }
 }

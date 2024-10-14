@@ -1,7 +1,7 @@
 {
   "facebook": {
     "db": {
-      "url": "postgres://postgres:postgres@localhost:5432/core"
+      "url": "postgres://postgres:postgres@postgres:5432/core"
     }
   }
 }

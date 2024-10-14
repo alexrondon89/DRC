@@ -51,7 +51,7 @@ func (cli DbClient) GetGroups() error {
 		return err
 	}
 
-	file, err := os.Create("groups.csv")
+	file, err := os.Create("./output/groups.csv")
 	writer := csv.NewWriter(file)
 	err = writer.Write([]string{"id", "name", "description", "privacy", "origin", "updated_time"})
 	if err != nil {
@@ -97,7 +97,7 @@ func (cli DbClient) GetPosts() error {
 		return err
 	}
 
-	file, err := os.Create("posts.csv")
+	file, err := os.Create("./output/posts.csv")
 	writer := csv.NewWriter(file)
 	err = writer.Write([]string{"id", "group_id", "message", "user_id", "origin", "created_at"})
 	if err != nil {
@@ -143,7 +143,7 @@ func (cli DbClient) GetComments() error {
 		return err
 	}
 
-	file, err := os.Create("comments.csv")
+	file, err := os.Create("./output/comments.csv")
 	writer := csv.NewWriter(file)
 	err = writer.Write([]string{"id", "post_id", "message", "user_id", "origin", "created_at"})
 	if err != nil {
@@ -166,7 +166,7 @@ func (cli DbClient) GetComments() error {
 	if err := writer.Error(); err != nil {
 		return err
 	}
-	log.Println("file posts.csv created successfully....")
+	log.Println("file comments.csv created successfully....")
 	return nil
 }
 
@@ -201,7 +201,7 @@ func (cli DbClient) GetGroupsPostsAndComments() error {
 		return err
 	}
 
-	file, err := os.Create("groups_posts_comments.csv")
+	file, err := os.Create("./output/groups_posts_comments.csv")
 	writer := csv.NewWriter(file)
 	err = writer.Write([]string{
 		"group_id", "group_name", "group_description", "group_privacy", "group_origin", "group_updated_time",

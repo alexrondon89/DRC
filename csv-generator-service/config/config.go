@@ -21,6 +21,7 @@ type db struct {
 }
 
 func GetServiceConfig() Config {
+	log.Println("loading configuration...")
 	workDir, err := os.Getwd()
 	if err != nil {
 		log.Fatalf("error getting working directory: %v", err)
@@ -37,6 +38,11 @@ func GetServiceConfig() Config {
 	if err := viper.Unmarshal(&config); err != nil {
 		log.Fatalf("error unmarshalling service configuration: %v", err)
 	}
-	log.Println("loading configuration...")
+
+	log.Println("creating output folder...")
+	if err := os.MkdirAll("./output", os.ModePerm); err != nil {
+		log.Fatalf("error creating folder: %v", err)
+	}
+
 	return config
 }

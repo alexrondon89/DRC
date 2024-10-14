@@ -17,7 +17,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: pg_admin
+    container_name: pg_admin_1
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
@@ -27,6 +27,29 @@ services:
       - postgres
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+
+  collector:
+    image: information-collector-service
+    container_name: information-collector-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+
+  csv-generator:
+    image: csv-generator-service
+    container_name: csv-generator-service
+    build:
+      context: ./../csv-generator-service
+      dockerfile: ./../csv-generator-service/Dockerfile
+    environment:
+      OUTPUT_PATH: ${OUTPUT_PATH}
+      TYPE: ${TYPE}
+    volumes:
+      - ${OUTPUT_PATH}:/app/output
+    depends_on:
+      - postgres
 
 volumes:
   postgres_data:

@@ -1,22 +1,20 @@
 #!/bin/bash
 
-NAME="csv-generator-service"
-if [ "$(docker images -q "$NAME")" ]; then
-  echo "$NAME image already exists... skipping building step"
+NAMECSV="csv-generator-service"
+OUTPUT_PATH="${1}"
+TYPE="${2}"
+
+if [ "$(docker images -q "$NAMECSV")" ]; then
+  echo "$NAMECSV image already exists... skipping building step"
 else
-  echo "creating $NAME image..."
-  docker build --no-cache -t "$NAME":latest -f ./csv-generator-service/Dockerfile ./csv-generator-service/
+  echo "creating $NAMECSV image..."
+  docker compose -f ./information-collector-service/docker-compose.yaml build --no-cache csv-generator
 fi
 
-until docker exec postgres_1 pg_isready -U postgres; do
-  echo "waiting for postgres..."
-  sleep 2
-done
-
-if [ -n "$(docker ps -q -f name="$NAME")" ]; then
-  echo "$NAME container is already running..."
+if [ -n "$(docker ps -q -f name="$NAMECSV")" ]; then
+  echo "$NAMECSV container is already running..."
   exit 0
 else
-  echo "path to save the file ${1}"
-  docker run --rm -v "${1}":./ "$NAME"
+  echo "starting $NAMECSV...."
+  OUTPUT_PATH="$OUTPUT_PATH" TYPE="$TYPE" docker-compose -f ./information-collector-service/docker-compose.yaml run --rm csv-generator
 fi
