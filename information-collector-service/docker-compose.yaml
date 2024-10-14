@@ -44,10 +44,9 @@ services:
       context: ./../csv-generator-service
       dockerfile: ./../csv-generator-service/Dockerfile
     environment:
-      OUTPUT_PATH: ${OUTPUT_PATH}
       TYPE: ${TYPE}
     volumes:
-      - ${OUTPUT_PATH}:/app/output
+      - /Users/cristhian/Desktop/prueba:/app/output #change this route to your local folder path
     depends_on:
       - postgres
 

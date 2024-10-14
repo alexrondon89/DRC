@@ -9,9 +9,12 @@ facebook-collector: pg-services
 	./scripts/collector.sh
 
 csv-generator: pg-services
-	@read -p "Indica la ruta absoluta donde quieres guardar el documento .csv: " OUTPUT_PATH; \
 	read -p "Seleccione el tipo de informacion a recuperar: " TYPE; \
 	chmod +x ./scripts/csv-generator.sh; \
-	./scripts/csv-generator.sh "$$OUTPUT_PATH" "$$TYPE"
+	./scripts/csv-generator.sh "$$TYPE"
 
 all: pg-services facebook-collector csv-generator
+
+down-services:
+	docker-compose -f ./information-collector-service/docker-compose.yaml down
+
