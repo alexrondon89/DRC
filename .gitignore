@@ -1,4 +1,7 @@
 .idea/
 .DS_Store
+
 information-collector-service/TODO
 csv-generator-service/TODO
+data-processing/TODO
+data-processing/.idea

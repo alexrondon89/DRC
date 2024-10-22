@@ -1,0 +1,7 @@
+spacy
+nltk
+transformers
+vaderSentiment
+gensim
+scikit-learn  # Para K-Means y DBSCAN
+scipy          # Para Hierarchical Clustering

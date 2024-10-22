@@ -1,0 +1,7 @@
+[x] leer como input un csv. preguntar nombre del archivo
+[x] consultar que columnas del archivo quiere evaluar
+[x] aplicar panda para limpiar registros duplicados y caracteres especiales
+[] aplicar NLP and Text Analysis: spaCy, NLTK, Transformers, VADER y Gensim
+[] devolver los resultados de aplicar NLP and Text Analysis
+[] aplicar las librerias de clustering
+[] devolver los resultados de aplicar clustering K-Means, DBSCAN y Hierarchical Clustering
